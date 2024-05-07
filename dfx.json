@@ -1,0 +1,27 @@
+{
+  "canisters": {
+    "malwatokens_backend": {
+      "candid": "src/malwatokens_backend/malwatokens_backend.did",
+      "package": "malwatokens_backend",
+      "type": "rust"
+    },
+    "malwatokens_frontend": {
+      "dependencies": [
+        "malwatokens_backend"
+      ],
+      "source": [
+        "src/malwatokens_frontend/dist"
+      ],
+      "type": "assets",
+      "workspace": "malwatokens_frontend"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}

@@ -1,0 +1,5 @@
+[workspace]
+members = [
+    "src/malwatokens_backend"
+]
+resolver = "2"
