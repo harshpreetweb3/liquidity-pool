@@ -3,12 +3,47 @@ name = "malwatokens_backend"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[[bin]]
+name = "malwatokens_backend"
+path = "src/main.rs"
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
-candid = "0.10"
-ic-cdk = "0.13"
-ic-cdk-timers = "0.7" # Feel free to remove this dependency if you don't need timers
+async-trait = "0.1.80"
+candid = "0.10.8"
+candid_parser = "0.1.4"
+ciborium = "0.2.2"
+hex = "0.4.3"
+ic-base-types =  { git = "https://github.com/dfinity/ic", branch = "master" }
+ic-canister-log =  { git = "https://github.com/dfinity/ic", branch = "master" }
+ic-canisters-http-types =  { git = "https://github.com/dfinity/ic", branch = "master" }
+ic-cdk = "0.13.3"
+ic-cdk-macros = "0.13.3"
+ic-crypto-tree-hash = { git = "https://github.com/dfinity/ic", branch = "master" }
+ic-icrc1 = { git = "https://github.com/dfinity/ic", branch = "master" }
+ic-icrc1-tokens-u256 = { git = "https://github.com/dfinity/ic", branch = "master" , optional = true }
+ic-icrc1-tokens-u64 = { git = "https://github.com/dfinity/ic", branch = "master" }
+ic-ledger-canister-core = { git = "https://github.com/dfinity/ic", branch = "master" }
+ic-ledger-core = { git = "https://github.com/dfinity/ic", branch = "master" }
+ic-ledger-hash-of = { git = "https://github.com/dfinity/ic", branch = "master" }
+ic-metrics-encoder = "1.1.1"
+icrc-ledger-client = { git = "https://github.com/dfinity/ic", branch = "master" }
+icrc-ledger-types = { git = "https://github.com/dfinity/ic", branch = "master" }
+num-traits = "0.2.19"
+serde = "1.0.201"
+serde_bytes = "0.11.14"
+
+[dev-dependencies]
+cddl = "0.9.4"
+ic-icrc1-ledger-sm-tests ={ git = "https://github.com/dfinity/ic", branch = "master" }
+ic-state-machine-tests = { git = "https://github.com/dfinity/ic", branch = "master" }
+ic-test-utilities-load-wasm = { git = "https://github.com/dfinity/ic", branch = "master" }
+leb128 = "0.2.4"
+proptest = "1.0"
+
+[features]
+default = []
+get-blocks-disabled = []
+u256-tokens = ["dep:ic-icrc1-tokens-u256"]
