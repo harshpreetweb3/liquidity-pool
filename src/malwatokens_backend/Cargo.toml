@@ -3,9 +3,9 @@ name = "malwatokens_backend"
 version = "0.1.0"
 edition = "2021"
 
-[[bin]]
-name = "malwatokens_backend"
-path = "src/main.rs"
+# [bin]]
+# name = "malwatokens_backend"
+# path = "src/main.rs"[
 
 [lib]
 crate-type = ["cdylib"]
@@ -42,6 +42,7 @@ ic-state-machine-tests = { git = "https://github.com/dfinity/ic", branch = "mast
 ic-test-utilities-load-wasm = { git = "https://github.com/dfinity/ic", branch = "master" }
 leb128 = "0.2.4"
 proptest = "1.0"
+
 
 [features]
 default = []

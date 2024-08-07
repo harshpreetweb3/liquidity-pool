@@ -2,7 +2,10 @@ pub mod cdk_runtime;
 
 #[cfg(test)]
 mod tests;
-mod main;
+pub mod main;
+
+use crate::main::*;
+
 use crate::cdk_runtime::CdkRuntime;
 use candid::{
     types::number::{Int, Nat},
@@ -67,9 +70,16 @@ const DEFAULT_MAX_MEMO_LENGTH: u16 = 32;
 #[derive(Debug, Clone)]
 pub struct Icrc1ArchiveWasm;
 
+// use std::env::var("IC_ICRC1_ARCHIVE_WASM_PATH");
+const IC_ICRC1_ARCHIVE_WASM_PATH : &str = "/home/harshpreet-singh/Documents/2024/may/custom-ledger/archive/target/wasm32-unknown-unknown/release/archive.wasm";
+
+
 impl ArchiveCanisterWasm for Icrc1ArchiveWasm {
     fn archive_wasm() -> Cow<'static, [u8]> {
-        Cow::Borrowed(include_bytes!(env!("IC_ICRC1_ARCHIVE_WASM_PATH")))
+
+        ic_cdk::println!("your wasm path {}", IC_ICRC1_ARCHIVE_WASM_PATH.to_string());
+
+        Cow::Borrowed(include_bytes!("/home/harshpreet-singh/Documents/2024/may/custom-ledger/archive/target/wasm32-unknown-unknown/release/archive.wasm"))
     }
 }
 
@@ -337,7 +347,7 @@ pub struct Ledger<Tokens: TokensType> {
     #[serde(default)]
     approvals: AllowanceTable<ApprovalKey, Account, Tokens>,
     blockchain: Blockchain<CdkRuntime, Icrc1ArchiveWasm>,
-
+    
     minting_account: Account,
     fee_collector: Option<FeeCollector<Account>>,
 

@@ -9,11 +9,14 @@ use ic_icrc1::{
     Operation, Transaction,
 };
 
-use crate::{Ledger, LedgerArgument};
+use crate::Ledger;
+use crate::LedgerArgument;
 
+use ic_icrc1_tokens_u64::U64;
 
 // use crate::Ledger;
 // use crate::LedgerArgument;
+
 use ic_ledger_canister_core::ledger::{
     apply_transaction, archive_blocks, LedgerAccess, LedgerContext, LedgerData,
     TransferError as CoreTransferError,
@@ -28,7 +31,7 @@ use icrc_ledger_types::{
     icrc::generic_metadata_value::MetadataValue as Value,
     icrc3::{
         archive::ArchiveInfo,
-        blocks::GetBlocksRequest,
+        blocks::GetBlocksRequest,   
         transactions::{GetTransactionsRequest, GetTransactionsResponse},
     },
 };
@@ -300,7 +303,7 @@ async fn execute_transfer(
     created_at_time: Option<u64>,
 ) -> Result<Nat, CoreTransferError<Tokens>> {
     //RefCell<Option<Ledger<Tokens>>>
-    let block_idx = Access::with_ledger_mut(|ledger| {
+    let block_idx = Access::with_ledger_mut(|ledger : &mut Ledger<U64>| {
         let now = TimeStamp::from_nanos_since_unix_epoch(ic_cdk::api::time());
         let created_at_time = created_at_time.map(TimeStamp::from_nanos_since_unix_epoch);
 
@@ -521,7 +524,7 @@ fn get_blocks(req: GetBlocksRequest) -> GetBlocksResponse {
 #[query]
 #[candid_method(query)]
 fn get_data_certificate() -> DataCertificate {
-    let hash_tree = Access::with_ledger(|ledger| ledger.construct_hash_tree());
+    let hash_tree = Access::with_ledger(|ledger: &Ledger<U64>| ledger.construct_hash_tree());
     let mut tree_buf = vec![];
     ciborium::ser::into_writer(&hash_tree, &mut tree_buf).unwrap();
     DataCertificate {
@@ -533,7 +536,7 @@ fn get_data_certificate() -> DataCertificate {
 #[update]
 #[candid_method(update)]
 async fn icrc2_approve(arg: ApproveArgs) -> Result<Nat, ApproveError> {
-    let block_idx = Access::with_ledger_mut(|ledger| {
+    let block_idx = Access::with_ledger_mut(|ledger: &mut Ledger<U64>| {
         let now = TimeStamp::from_nanos_since_unix_epoch(ic_cdk::api::time());
 
         let from_account = Account {
@@ -590,7 +593,7 @@ async fn icrc2_approve(arg: ApproveArgs) -> Result<Nat, ApproveError> {
 
         let (block_idx, _) = apply_transaction(ledger, tx, now, expected_fee_tokens)
             .map_err(convert_transfer_error)
-            .map_err(|err| {
+            .map_err(|err: ic_icrc1::endpoints::EndpointsTransferError<U64>| {
                 let err: ApproveError = match err.try_into() {
                     Ok(err) => err,
                     Err(err) => ic_cdk::trap(&err),
@@ -633,7 +636,7 @@ fn icrc3_get_archives(args: GetArchivesArgs) -> GetArchivesResult {
 #[candid_method(query)]
 fn icrc3_get_tip_certificate() -> Option<icrc_ledger_types::icrc3::blocks::ICRC3DataCertificate> {
     let certificate = ByteBuf::from(ic_cdk::api::data_certificate()?);
-    let hash_tree = Access::with_ledger(|ledger| ledger.construct_hash_tree());
+    let hash_tree = Access::with_ledger(|ledger: &Ledger<U64>| ledger.construct_hash_tree());
     let mut tree_buf = vec![];
     ciborium::ser::into_writer(&hash_tree, &mut tree_buf).unwrap();
     Some(icrc_ledger_types::icrc3::blocks::ICRC3DataCertificate {
